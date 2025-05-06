@@ -19,7 +19,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://foodapp-backend-njc0.onrender.com/api/auth/register', form);
+       await axios.post('https://foodapp-backend-njc0.onrender.com/api/auth/register', form);
       setMsg('Registered successfully! Redirecting to login...');
       setTimeout(() => navigate('/login'), 1000); // Slight delay before redirecting
     } catch (err) {
