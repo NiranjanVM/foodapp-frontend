@@ -102,19 +102,15 @@ const Home = () => {
   return (
     <div className="home-page">
       <div>
-        <h3>{isAdmin ? 'Admin - Food Inventory' : ''}</h3>
-
-        {!isAdmin && (
-          <div className="search-bar-container">
-            <input
-              type="text"
-              placeholder="Search food..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
-        )}
+        <div className="search-bar-container">
+          <input
+            type="text"
+            placeholder="Search food..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
 
         <div className="food-list">
           {filteredFoods.length > 0 ? (
