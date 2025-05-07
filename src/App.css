@@ -468,6 +468,10 @@ input:focus, select:focus {
   .home-page {
     padding-top: 50px;
   }
+
+  .category-card{
+    max-width: 90%;
+  }
 }
 
 @media (max-width: 430px) {
