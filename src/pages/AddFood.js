@@ -86,9 +86,9 @@ const AddFood = () => {
           <option value="">Select Category</option>
           <option value="Indian">Indian</option>
           <option value="Chinese">Chinese</option>
-          <option value="Italian">Italian</option>
-          <option value="American">American</option>
-          <option value="Dessert">Dessert</option>
+          <option value="Keralafood">Keralafood </option>
+          <option value="Beverages">Beverages</option>
+          <option value="Burgers">Buggers & Pizza</option>
         </select>
 
         <button type="submit">Add </button>

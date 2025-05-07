@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import FoodCard from '../components/FoodCard';
 
+
 const Home = () => {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
   const token = localStorage.getItem('token');
@@ -92,42 +94,72 @@ const Home = () => {
     }
   };
 
-  const filteredFoods = foods.filter((food) =>
-    food.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredFoods = foods
+    .filter(food => !selectedCategory || food.category === selectedCategory)
+    .filter(food => food.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const categoryImages = {
+    Indian: 'https://media.istockphoto.com/id/1250567402/photo/table-top-view-of-indian-food.webp?a=1&b=1&s=612x612&w=0&k=20&c=B0Rjj7SmL3PJhPBB23UTbJpBui19DgzIpYLbX4PzwM0=',
+    Chinese: 'https://media.istockphoto.com/id/1038065454/photo/bowls-with-chow-mein.webp?a=1&b=1&s=612x612&w=0&k=20&c=ik0GmOcoXuZU1B966_Nv-zUSi772G7DEJaiFTuCn3nA=',
+    Burgers: 'https://media.istockphoto.com/id/495204032/photo/fresh-tasty-burger.webp?a=1&b=1&s=612x612&w=0&k=20&c=qJnewgOMl_nubyOpEbiMq4ygka_ZRYTH2nC7N3KFGB4=',
+    Beverages: 'https://media.istockphoto.com/id/479079920/photo/watermelon-mojito.webp?a=1&b=1&s=612x612&w=0&k=20&c=KoVXPbsY2YBib29Z6oeU8vRzLag8Pukp_Li451exXco=',
+    Keralafood: 'https://images.unsplash.com/photo-1723388800779-5699cc142f18?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YXV0aGVudGljJTIwa2VyYWxhJTIwZm9vZHxlbnwwfHwwfHx8MA%3D%3D',
+    // Add more mappings
+  };
+
+  const uniqueCategories = [...new Set(foods.map(food => food.category))];
 
   if (loading) return <p>Loading...</p>;
   if (msg) return <p>{msg}</p>;
 
   return (
     <div className="home-page">
-      <div>
-        <div className="search-bar-container">
-          <input
-            type="text"
-            placeholder="Search food..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+      {selectedCategory ? (
+        <>
+          <div className="search-bar-container">
+            <input
+              type="text"
+              placeholder={`Search in ${selectedCategory}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button onClick={() => setSelectedCategory(null)} className="back-button">
+              ⬅ Back to Categories
+            </button>
+          </div>
+          <div className="food-list">
+            {filteredFoods.length > 0 ? (
+              filteredFoods.map((food) => (
+                <FoodCard
+                  key={food._id}
+                  food={food}
+                  isAdmin={isAdmin}
+                  onDelete={handleDelete}
+                  onPlaceOrder={handlePlaceOrder}
+                />
+              ))
+            ) : (
+              <p>No food items found in {selectedCategory}.</p>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="category-list">
+          {uniqueCategories.map((cat) => (
+            <div
+              key={cat}
+              className="category-card"
+              style={{
+                backgroundImage: `url(${categoryImages[cat] || 'https://via.placeholder.com/300'})`,
+              }}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              <div className="category-overlay">{cat}</div>
+            </div>
+          ))}
         </div>
-
-        <div className="food-list">
-          {filteredFoods.length > 0 ? (
-            filteredFoods.map((food) => (
-              <FoodCard
-                key={food._id}
-                food={food}
-                isAdmin={isAdmin}
-                onDelete={handleDelete}
-                onPlaceOrder={handlePlaceOrder}
-              />
-            ))
-          ) : (
-            <p>No food items found.</p>
-          )}
-        </div>
-      </div>
+      )}
     </div>
   );
 };
